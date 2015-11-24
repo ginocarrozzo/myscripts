@@ -1,0 +1,153 @@
+#!/bin/bash
+WDIR="/home/gino/nxw-gmpls"
+MYPREFIX=$WDIR/mybuild
+
+function config ()
+{
+    (cd $1 && \
+	echo "=== Repository: $i" && \
+	./bootstrap && \
+	echo "" && echo "" && \
+	PKG_CONFIG_PATH=$MYPREFIX/lib/pkgconfig ./configure --prefix=$MYPREFIX && \
+	echo "" && echo "" \
+	&& make all install && \
+	echo "" && echo "") || exit -1;
+}
+
+function doMake ()
+{
+    (cd $1 && echo "=== Repository: $i" && make all && \
+	echo "" && echo "") || exit -1;
+}
+
+function doInstall ()
+{
+    (cd $1 && echo "=== Repository: $i" && make all install && \
+	echo "" && echo "") || exit -1;
+}
+
+function myhelp ()
+{
+    echo "Usage: $0 <CMD> <REPO>"
+    echo "-----"
+    echo " CMD   := cfg (config) | make | install"
+    echo ""
+    echo " REPOS := all                  |"
+    echo "          gmpls-idl            |"
+    echo "          gmpls-libs           |"
+    echo "          gmpls-ips            |"
+    echo "          gmpls-scngw          |"
+    echo "          gmpls-lrm            |"
+    echo "          gmpls-grsvpte        |"
+    echo "          gmpls-tnrc           |"
+    echo "          gmpls-tnrc-dummy     |"
+    echo "          gmpls-pcc            |"
+    echo "          gmpls-pcep           |"
+    echo "          gmpls-pcera          |"
+    echo "          gmpls-phosphorus     |"
+    echo "          gmpls-manager        |"
+    echo "          gmpls-tester         |"
+    echo "          gmpls-pymods         |"
+    echo "          gmpls-shell"
+    echo ""
+}
+
+REPOS='gmpls-idl
+       gmpls-libs
+       gmpls-ips
+       gmpls-scngw
+       gmpls-lrm
+       gmpls-grsvpte
+       gmpls-tnrc
+       gmpls-tnrc-dummy
+       gmpls-pcc
+       gmpls-pcep
+       gmpls-pcera
+       gmpls-phosphorus
+       gmpls-manager
+       gmpls-tester
+       gmpls-pymods
+       gmpls-shell'
+
+
+case $1 in
+    (cfg | config)
+	CMD=config;
+	;;
+    (make)
+	CMD=doMake;
+	;;
+    (install)
+	CMD=doInstall;
+	;;
+    (*)
+	echo "Invalid option '$1'!"
+	myhelp;
+	exit -1
+	;;
+esac
+
+
+case $2 in
+    (gmpls-idl)
+	$CMD $2;
+	;;
+    (gmpls-libs)
+	$CMD $2;
+	;;
+    (gmpls-ips)
+	$CMD $2;
+	;;
+    (gmpls-scngw)
+	$CMD $2;
+	;;
+    (gmpls-lrm)
+	$CMD $2;
+	;;
+    (gmpls-grsvpte)
+	$CMD $2;
+	;;
+    (gmpls-tnrc)
+	$CMD $2;
+	;;
+    (gmpls-tnrc-dummy)
+	$CMD $2;
+	;;
+    (gmpls-pcc)
+	$CMD $2;
+	;;
+    (gmpls-pcep)
+	$CMD $2;
+	;;
+    (gmpls-pcera)
+	$CMD $2;
+	;;
+    (gmpls-phosphorus)
+	$CMD $2;
+	;;
+    (gmpls-manager)
+	$CMD $2;
+	;;
+    (gmpls-tester)
+	$CMD $2;
+	;;
+    (gmpls-pymods)
+	$CMD $2;
+	;;
+    (gmpls-shell)
+	$CMD $2;
+	;;
+    (all)
+	for i in $REPOS; do
+	    $CMD $i;
+	done
+	echo "=== DONE ==="
+	;;
+    (*)
+	echo "Invalid repository '$2'!"
+	myhelp;
+	exit -1
+	;;
+esac
+
+exit 1

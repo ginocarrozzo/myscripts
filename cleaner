@@ -1,0 +1,13 @@
+# !/bin/bash
+rm -f `find . -name "fav*"`
+rm -f `find . -name "cazzo*"`
+rm -f `find . -name "cane*"`
+rm -f `find . -name "diffolo"`
+rm -f `find . -name "*~"`
+rm -f `find . -name ".*~"`
+rm -f `find . -name "#*"`
+rm -f `find . -name ".#*"`
+rm -f `find . -name "*.org"`
+rm -f `find . -name "*.bak"`
+rm -f `find . -name "bkt*"`
+rm -f `find . -name "mibpkg__*"`

@@ -1,0 +1,212 @@
+#!/bin/bash
+
+function config()
+{
+    echo "=== Repository: $1"
+    cd $1
+    git config user.name "Gino Carrozzo"
+    git config user.email "g.carrozzo@nextworks.it"
+    git config --add push.default tracking
+    git config branch.autosetupmerge true
+    git config --global color.diff auto
+    git config --global color.status auto
+    git config --global color.branch auto
+    cd -
+}
+
+function cloneAndSet()
+{
+    echo "Step 01/17" && git clone ssh://terrance.nextworks.it/pub/scm/git/$1
+    echo "Step 02/17" && cd $1
+    echo "Step 03/17" && git config user.name "Gino Carrozzo"
+    echo "Step 04/17" && git config user.email "g.carrozzo@nextworks.it"
+    echo "Step 05/17" && git config --add push.default tracking
+    echo "Step 06/17" && git config branch.autosetupmerge true
+    echo "Step 07/17" && git config --global color.diff auto
+    echo "Step 08/17" && git config --global color.status auto
+    echo "Step 09/17" && git config --global color.branch auto
+    echo "Step 10/17" && git pull
+    echo "Step 11/17" && git push origin master:refs/heads/gino
+    echo "Step 12/17" && git branch --track fry-$1 origin/gino
+    echo "Step 13/17" && git checkout fry-$1
+    echo "Step 14/17" && git pull
+    echo "Step 15/17" && git commit
+    echo "Step 16/17" && git push
+    echo "Step 17/17" && cd -
+}
+
+function makeBranch()
+{
+    NAME=`basename $1`
+    echo "Step 1/7" && cd $1
+    echo "Step 2/7" && git branch --track fry-$NAME-$2 $3
+    echo "Step 3/7" && git checkout fry-$NAME-$2
+    echo "Step 4/7" && git pull
+    echo "Step 5/7" && git commit
+    echo "Step 6/7" && git push
+    echo "Step 7/7" && cd -
+}
+
+function checkout()
+{
+    (cd $1 &&
+        echo "=== Repository: $1" &&
+        git checkout fry-`basename $1`-$2 &&
+        echo "" && echo "");
+}
+
+function check ()
+{
+    (cd $1 &&
+        echo "=== Repository: $1" &&
+#               git branch -av &&
+#               echo "---" && echo "" &&
+        git status &&
+        echo "" && echo "");
+}
+
+function pull ()
+{
+    (cd $1 &&
+        echo "=== Repository: $1" &&
+        git pull &&
+        echo "" && echo "");
+}
+
+function push ()
+{
+    (cd $1 &&
+        echo "=== Repository: $1" &&
+        git push &&
+        echo "" && echo "");
+}
+
+function merge ()
+{
+    (cd $1 &&
+        git checkout master &&
+        git pull &&
+        git checkout fry-$1 &&
+        git merge master &&
+        git commit &&
+        git push)
+}
+
+function myhelp ()
+{
+    echo "Usage: $0 <CMD> <REPO>"
+    echo "-----"
+    echo " CMD   := cl (clone) | cfg (config) | ch (check) | up (merge) | "
+    echo "          push | pull | branch | checkout"
+    echo ""
+    echo " REPOS := all | gmpls-build | gmpls-grsvpte |  gmpls-idl | "
+    echo "          gmpls-ips | gmpls-libs | gmpls-lrm | gmpls-manager | "
+    echo "          gmpls-pcc | gmpls-pcep | gmpls-pcera | gmpls-pcera-algos | "
+    echo "          gmpls-pcera-algos-free | gmpls-pcera-algos-gateways | "
+    echo "          gmpls-phosphorus | gmpls-pymods | "
+    echo "          gmpls-scngw | gmpls-shell | gmpls-tester | "
+    echo "          gmpls-tnrc | gmpls-tnrc-dummy | gmpls-tnrc-sp-skeletons"
+    echo ""
+}
+
+REPOS='gmpls-build
+           gmpls-grsvpte
+           gmpls-idl
+           gmpls-ips
+           gmpls-libs
+           gmpls-lrm
+           gmpls-manager
+           gmpls-pcc
+           gmpls-pcep
+           gmpls-pcera
+           gmpls-pcera-algos
+           gmpls-pcera-algos-free
+           gmpls-pcera-algos-gateways
+           gmpls-phosphorus
+           gmpls-pymods
+           gmpls-scngw
+           gmpls-shell
+           gmpls-tester
+           gmpls-tnrc
+           gmpls-tnrc-dummy
+           gmpls-tnrc-sp-skeletons'
+
+NEWBRANCH=""
+REMORIGIN=""
+WDIR="/home/gino/projects/nxw-gmpls/"
+
+case $1 in
+    (cl | clone)
+        CMD=cloneAndSet;
+        WDIR=""
+        ;;
+    (cfg | config)
+        CMD=config;
+        WDIR=""
+        ;;
+    (ch | check)
+        CMD=check;
+        WDIR=""
+        ;;
+    (up|merge)
+        CMD=merge;
+        WDIR=""
+        ;;
+    (push)
+        CMD=push;
+        WDIR=""
+        ;;
+    (pull)
+        CMD=pull;
+        WDIR=""
+        ;;
+    (branch)
+        CMD=makeBranch;
+        NEWBRANCH=$3
+        REMORIGIN=$4
+        ;;
+    (checkout)
+        CMD=checkout;
+        NEWBRANCH=$3
+        ;;
+    (*)
+        echo "Invalid option '$1'!"
+        myhelp;
+        exit -1
+        ;;
+esac
+
+
+case $2 in
+    (gmpls-build | gmpls-grsvpte |  gmpls-idl | gmpls-ips | gmpls-libs)
+        $CMD $WDIR$2 $NEWBRANCH $REMORIGIN;
+        ;;
+    (gmpls-lrm | gmpls-manager | gmpls-pcc | gmpls-pcep | gmpls-pcera)
+        $CMD $WDIR$2 $NEWBRANCH $REMORIGIN;
+        ;;
+    (gmpls-phosphorus | gmpls-pymods | gmpls-scngw | gmpls-shell)
+        $CMD $WDIR$2 $NEWBRANCH $REMORIGIN;
+        ;;
+    (gmpls-tester | gmpls-tnrc | gmpls-tnrc-dummy | gmpls-pcera-algos)
+        $CMD $WDIR$2 $NEWBRANCH $REMORIGIN;
+        ;;
+    (gmpls-pcera-algos-free | gmpls-pcera-algos-gateways)
+        $CMD $WDIR$2 $NEWBRANCH $REMORIGIN;
+        ;;
+    (gmpls-tnrc-sp-skeletons)
+        $CMD $WDIR$2 $NEWBRANCH $REMORIGIN;
+        ;;
+    (all)
+        for i in $REPOS; do
+            $CMD $WDIR$i $NEWBRANCH $REMORIGIN;
+        done
+        echo "=== DONE ==="
+        ;;
+    (*)
+        echo "Invalid repository '$2'!"
+        myhelp;
+        exit -1
+        ;;
+esac
+
+exit 1
