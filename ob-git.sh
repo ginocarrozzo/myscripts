@@ -16,32 +16,50 @@ openbaton.github.io"
 
 function status ()
 {
-    for i in $PROJECTS; do
-	(cd $i &&
-	    echo "=== Repository: $i" &&
-	    #               git branch -av &&
-	    #               echo "---" && echo "" &&
-	    git status &&
-	    echo "" && echo "");
-    done
+    if [ -z $1 ]; then
+        for i in $PROJECTS; do
+            (cd $i &&
+                echo "=== Repository: $i" &&
+                git status &&
+                echo "" && echo "");
+        done
+    else
+        (cd $1 &&
+            echo "=== Repository: $1" &&
+            git status &&
+            echo "" && echo "");
+    fi
 }
 
 function pull ()
 {
-    for i in $PROJECTS; do
-	(cd $i &&
-	    echo "=== Repository: $i" &&
-	    git pull &&
-	    echo "" && echo "");
-    done
+    if [ -z $1 ]; then
+        for i in $PROJECTS; do
+            (cd $i &&
+                echo "=== Repository: $i" &&
+                git pull &&
+                echo "" && echo "");
+        done
+    else
+        (cd $1 &&
+            echo "=== Repository: $1" &&
+            git pull &&
+            echo "" && echo "");
+    fi
 }
 
 function clone ()
 {
-    for i in $PROJECTS; do
-	echo -e "\n\n\n $BANNER CLONING PROJECT: $i $BANNER"
-	git clone ${GITHUB_USERNAME}@github.com:openbaton/$i.git;
-    done
+    if [ -z $1 ]; then
+        for i in $PROJECTS; do
+            echo -e "\n\n\n $BANNER CLONING PROJECT: $i $BANNER"
+            git clone ${GITHUB_USERNAME}@github.com:openbaton/$i.git;
+        done
+    else
+        echo -e "\n\n\n $BANNER CLONING PROJECT: $1 $BANNER"
+        git clone ${GITHUB_USERNAME}@github.com:openbaton/$1.git;
+
+    fi
 }
 
 function myhelp ()
@@ -69,20 +87,20 @@ echo -e "\n$BANNER DONE!!! $BANNER\n\n\n"
 
 case $1 in
     (cl | clone)
-	clone;
-	;;
+        clone $2;
+        ;;
 #    (cfg | config)
-#	config;
-#	;;
+#       config;
+#       ;;
     (st | status)
-	status;
-	;;
+        status $2;
+        ;;
     (pull)
-	pull;
-	;;
+        pull $2;
+        ;;
     (*)
-	echo "Invalid option '$1'!"
-	myhelp;
-	exit -1
-	;;
+        echo "Invalid option '$1'!"
+        myhelp;
+        exit -1
+        ;;
 esac
