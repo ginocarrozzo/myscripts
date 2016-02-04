@@ -12,5 +12,5 @@ sudo apt-get autoremove
 ##List kernel versions
 dpkg --get-selections | grep linux-image
 
-echo "sudo apt-get remove --purge linux-image-X.X.XX-XX-generic"
-
+echo -e "\n\nsudo apt-get remove --purge linux-image-X.X.XX-XX-generic"
+echo -e " ******* CURRENT KERNEL NOT TO TOUCH: `uname -r` *******"
