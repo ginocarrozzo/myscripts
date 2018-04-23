@@ -23,6 +23,9 @@ alias netdev-1="ssh -Y gmpls@netdev-1"
 alias netdev-2="ssh -Y gmpls@netdev-2"
 alias netdev-3="ssh -Y gmpls@netdev-3"
 
+alias idea="~/IDEs/idea-IC/bin/idea.sh &"
+alias eclipse="~/IDEs/eclipse/jee-oxygen/eclipse/eclipse&"
+
 function flc {
   ssh -i ~/.ssh/tss100.key root@151.98.27.$1
 }
